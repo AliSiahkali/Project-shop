@@ -1,0 +1,141 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Db_ShopOrderModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Tbl_Customer">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Family" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="FullName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Mobile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="adress" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Tbl_Order" Relationship="Self.FK_Tbl_Order_Tbl_Customer" FromRole="Tbl_Customer" ToRole="Tbl_Order" />
+  </EntityType>
+  <EntityType Name="Tbl_Order">
+    <Key>
+      <PropertyRef Name="OrderID" />
+    </Key>
+    <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="CustomerID" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Tbl_Customer" Relationship="Self.FK_Tbl_Order_Tbl_Customer" FromRole="Tbl_Order" ToRole="Tbl_Customer" />
+    <NavigationProperty Name="Tbl_OrderDtil" Relationship="Self.FK_Tbl_OrderDtil_Tbl_Order" FromRole="Tbl_Order" ToRole="Tbl_OrderDtil" />
+  </EntityType>
+  <EntityType Name="Tbl_OrderDtil">
+    <Key>
+      <PropertyRef Name="OrderDetiID" />
+    </Key>
+    <Property Name="OrderDetiID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="OrderID" Type="Int32" />
+    <Property Name="Count" Type="Int32" />
+    <Property Name="Price" Type="Int32" />
+    <Property Name="PriceAll" Type="Int32" />
+    <NavigationProperty Name="Tbl_Order" Relationship="Self.FK_Tbl_OrderDtil_Tbl_Order" FromRole="Tbl_OrderDtil" ToRole="Tbl_Order" />
+    <NavigationProperty Name="Tbl_Product" Relationship="Self.FK_Tbl_OrderDtil_Tbl_Product" FromRole="Tbl_OrderDtil" ToRole="Tbl_Product" />
+  </EntityType>
+  <EntityType Name="Tbl_Product">
+    <Key>
+      <PropertyRef Name="ProductID" />
+    </Key>
+    <Property Name="ProductID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ProductName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="Barcode" Type="Int32" Nullable="false" />
+    <Property Name="Count" Type="Int32" Nullable="false" />
+    <Property Name="Price" Type="Int32" Nullable="false" />
+    <Property Name="Note" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+    <NavigationProperty Name="Tbl_OrderDtil" Relationship="Self.FK_Tbl_OrderDtil_Tbl_Product" FromRole="Tbl_Product" ToRole="Tbl_OrderDtil" />
+    <NavigationProperty Name="Tbl_Stor" Relationship="Self.FK_Tbl_Stor_Tbl_Product" FromRole="Tbl_Product" ToRole="Tbl_Stor" />
+  </EntityType>
+  <EntityType Name="Tbl_Stor">
+    <Key>
+      <PropertyRef Name="StoreID" />
+    </Key>
+    <Property Name="StoreID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ProductID" Type="Int32" Nullable="false" />
+    <Property Name="Count" Type="Int32" Nullable="false" />
+    <Property Name="Date" Type="DateTime" Nullable="false" Precision="3" />
+    <NavigationProperty Name="Tbl_Product" Relationship="Self.FK_Tbl_Stor_Tbl_Product" FromRole="Tbl_Stor" ToRole="Tbl_Product" />
+  </EntityType>
+  <EntityType Name="Tbl_User">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <Association Name="FK_Tbl_Order_Tbl_Customer">
+    <End Role="Tbl_Customer" Type="Self.Tbl_Customer" Multiplicity="1" />
+    <End Role="Tbl_Order" Type="Self.Tbl_Order" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Customer">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Tbl_Order">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Tbl_OrderDtil_Tbl_Order">
+    <End Role="Tbl_Order" Type="Self.Tbl_Order" Multiplicity="0..1" />
+    <End Role="Tbl_OrderDtil" Type="Self.Tbl_OrderDtil" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Order">
+        <PropertyRef Name="OrderID" />
+      </Principal>
+      <Dependent Role="Tbl_OrderDtil">
+        <PropertyRef Name="OrderID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Tbl_OrderDtil_Tbl_Product">
+    <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="0..1" />
+    <End Role="Tbl_OrderDtil" Type="Self.Tbl_OrderDtil" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Product">
+        <PropertyRef Name="ProductID" />
+      </Principal>
+      <Dependent Role="Tbl_OrderDtil">
+        <PropertyRef Name="OrderID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Tbl_Stor_Tbl_Product">
+    <End Role="Tbl_Product" Type="Self.Tbl_Product" Multiplicity="1" />
+    <End Role="Tbl_Stor" Type="Self.Tbl_Stor" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Tbl_Product">
+        <PropertyRef Name="ProductID" />
+      </Principal>
+      <Dependent Role="Tbl_Stor">
+        <PropertyRef Name="ProductID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="Db_ShopOrderEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Tbl_Customer" EntityType="Self.Tbl_Customer" />
+    <EntitySet Name="Tbl_Order" EntityType="Self.Tbl_Order" />
+    <EntitySet Name="Tbl_OrderDtil" EntityType="Self.Tbl_OrderDtil" />
+    <EntitySet Name="Tbl_Product" EntityType="Self.Tbl_Product" />
+    <EntitySet Name="Tbl_Stor" EntityType="Self.Tbl_Stor" />
+    <EntitySet Name="Tbl_User" EntityType="Self.Tbl_User" />
+    <AssociationSet Name="FK_Tbl_Order_Tbl_Customer" Association="Self.FK_Tbl_Order_Tbl_Customer">
+      <End Role="Tbl_Customer" EntitySet="Tbl_Customer" />
+      <End Role="Tbl_Order" EntitySet="Tbl_Order" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Tbl_OrderDtil_Tbl_Order" Association="Self.FK_Tbl_OrderDtil_Tbl_Order">
+      <End Role="Tbl_Order" EntitySet="Tbl_Order" />
+      <End Role="Tbl_OrderDtil" EntitySet="Tbl_OrderDtil" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Tbl_OrderDtil_Tbl_Product" Association="Self.FK_Tbl_OrderDtil_Tbl_Product">
+      <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+      <End Role="Tbl_OrderDtil" EntitySet="Tbl_OrderDtil" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Tbl_Stor_Tbl_Product" Association="Self.FK_Tbl_Stor_Tbl_Product">
+      <End Role="Tbl_Product" EntitySet="Tbl_Product" />
+      <End Role="Tbl_Stor" EntitySet="Tbl_Stor" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
